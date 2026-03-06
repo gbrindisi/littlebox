@@ -1,0 +1,20 @@
+# agentbox configuration
+# See: https://github.com/gbrindisi/agentbox
+# Agentfile for OpenHands agent (stub - configuration TBD)
+
+agent:
+  # Command and arguments to run
+  command: ["openhands"]
+
+
+# Workspace configuration
+workspace:
+  # Directory to mount as /workspace in the container
+  # Relative paths resolve from Agentfile directory
+  path: .
+
+# Container security settings (optional)
+# container:
+#   no_new_privileges: true    # Prevent privilege escalation (default: true)
+#   readonly_root: false       # Make root filesystem read-only
+#   seccomp_profile: default   # Seccomp profile: default, unconfined, or path

@@ -1,0 +1,2 @@
+# Test allowed IPs - only localhost
+127.0.0.1

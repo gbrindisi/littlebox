@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/tekwizely/pre-commit-golang
+    rev: v1.0.0-rc.1
+    hooks:
+      # Format code with gofmt
+      - id: go-fmt
+        args: [-w]
+
+      # Run golangci-lint for comprehensive linting
+      - id: golangci-lint-mod
+
+      # Tidy go.mod and go.sum
+      - id: go-mod-tidy
+
+      # Run go vet for static analysis
+      - id: go-vet-mod
+
+      # Build check
+      - id: go-build-mod

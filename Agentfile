@@ -1,0 +1,51 @@
+# agentbox configuration
+# See: https://github.com/gbrindisi/agentbox
+
+# Agent configuration
+agent:
+  # Build script runs as root during image build to install tools
+  build_script: |
+    curl -fsSL https://claude.ai/install.sh | bash
+    # Copy claude to system-wide location (install script puts it in ~/.local/bin)
+    cp /root/.local/bin/claude /usr/local/bin/claude
+
+  # Command and arguments to run
+  command: ["claude"]
+  args: ["--dangerously-skip-permissions", "--print"]
+
+  # Environment variables to pass from host to container
+  # Supports glob patterns like CLAUDE_CODE_*
+  env_passthrough:
+   - ANTHROPIC_API_KEY
+   - DISABLE_TELEMETRY
+   - DISABLE_ERROR_REPORTING
+
+
+# Workspace configuration
+workspace:
+  # Directory to mount as /workspace in the container
+  # Default: current directory
+  path: .
+
+# Additional mounts (optional)
+mounts:
+  - source: ~/.claude
+    target: /home/agent/.claude
+    readonly: false
+
+# Network configuration
+network:
+  # Composable presets for services your agent needs
+  presets:
+    - anthropic
+    - github
+
+  # Additional custom domains (optional):
+  # allow:
+  #   - custom-api.example.com
+
+# Container security settings (optional)
+# container:
+#   no_new_privileges: true    # Prevent privilege escalation (default: true)
+#   read_only_root: false      # Make root filesystem read-only
+#   seccomp_profile: default   # Seccomp profile: default, unconfined, or path
