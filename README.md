@@ -4,6 +4,8 @@ A sandbox for running autonomous coding agents with network and filesystem isola
 
 Coding agents are most useful when they can run autonomously, but this introduces risks: rogue activities, data exfiltration, or unintended external communications. Agentbox provides a containerized sandbox around any agent, with sensible defaults for quick setup and enough flexibility to customize for your needs.
 
+(based on rationale outlined [here](https://cloudberry.engineering/article/on-sandboxing-agents/))
+
 ## The Security Model
 
 Running agents autonomously means giving them significant control over your system. An agent with unrestricted network access could exfiltrate code to external servers. An agent with full filesystem access could read sensitive credentials or modify critical files.
