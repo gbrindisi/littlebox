@@ -13,7 +13,7 @@ func TestGenerateReferenceTemplate(t *testing.T) {
 
 	// Verify header sections present
 	t.Run("header", func(t *testing.T) {
-		if !strings.Contains(template, "# agentbox reference configuration") {
+		if !strings.Contains(template, "# littlebox reference configuration") {
 			t.Error("expected reference configuration header")
 		}
 		if !strings.Contains(template, "https://github.com/gbrindisi/littlebox") {
@@ -26,7 +26,7 @@ func TestGenerateReferenceTemplate(t *testing.T) {
 		if !strings.Contains(template, "Available profiles") {
 			t.Error("expected 'Available profiles' section")
 		}
-		if !strings.Contains(template, "agentbox init --profile <name>") {
+		if !strings.Contains(template, "littlebox init --profile <name>") {
 			t.Error("expected profile usage hint")
 		}
 

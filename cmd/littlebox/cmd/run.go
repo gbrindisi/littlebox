@@ -24,23 +24,23 @@ var runCmd = &cobra.Command{
 	Long: `Run an agent in an isolated Docker container with network and filesystem isolation.
 
 The run command loads configuration from an Agentfile (or specified config file),
-builds the agentbox image if not cached, creates a container with the configured
+builds the littlebox image if not cached, creates a container with the configured
 security settings, and attaches to it.
 
 Arguments after -- are passed directly to the agent command.
 
 Examples:
   # Run with default Agentfile in current directory
-  agentbox run
+  littlebox run
 
   # Run with a specific config file
-  agentbox run -c /path/to/Agentfile
+  littlebox run -c /path/to/Agentfile
 
   # Override workspace directory
-  agentbox run -w /path/to/workspace
+  littlebox run -w /path/to/workspace
 
   # Pass arguments to the agent
-  agentbox run -- --help`,
+  littlebox run -- --help`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Check for mutually exclusive flags
 		if forceTTY && noTTY {

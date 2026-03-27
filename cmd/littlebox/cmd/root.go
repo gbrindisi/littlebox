@@ -17,9 +17,9 @@ var (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "agentbox",
+	Use:   "littlebox",
 	Short: "Run autonomous coding agents in isolated Docker containers",
-	Long: `agentbox is a CLI tool for running autonomous coding agents
+	Long: `littlebox is a CLI tool for running autonomous coding agents
 (like Claude Code or Aider) in secure, isolated Docker containers.
 
 It provides:
@@ -46,7 +46,7 @@ func init() {
 func SetVersion(v string) {
 	version = v
 	rootCmd.Version = v
-	rootCmd.SetVersionTemplate(fmt.Sprintf("agentbox version %s\n", v))
+	rootCmd.SetVersionTemplate(fmt.Sprintf("littlebox version %s\n", v))
 }
 
 // GetRootCmd returns the root command for testing purposes

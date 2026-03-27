@@ -25,10 +25,10 @@ The validate command checks the configuration for errors including:
 
 Examples:
   # Validate Agentfile in current directory
-  agentbox validate
+  littlebox validate
 
   # Validate a specific config file
-  agentbox validate -c /path/to/Agentfile`,
+  littlebox validate -c /path/to/Agentfile`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Load and validate configuration
 		_, err := loadAndValidateConfig()

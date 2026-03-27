@@ -27,10 +27,10 @@ with profile-specific comments and explanations.
 
 Examples:
   # Create reference template (all sections commented)
-  agentbox init
+  littlebox init
 
   # Create working config from claude-code profile
-  agentbox init --profile claude-code`,
+  littlebox init --profile claude-code`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Check if Agentfile already exists
 		if _, err := os.Stat(config.DefaultConfigFile); err == nil {
@@ -66,10 +66,10 @@ func generateReferenceTemplate() string {
 	var sb strings.Builder
 
 	// Header with available profiles
-	sb.WriteString("# agentbox reference configuration\n")
+	sb.WriteString("# littlebox reference configuration\n")
 	sb.WriteString("# See: https://github.com/gbrindisi/littlebox\n")
 	sb.WriteString("#\n")
-	sb.WriteString("# Available profiles (use: agentbox init --profile <name>):\n")
+	sb.WriteString("# Available profiles (use: littlebox init --profile <name>):\n")
 
 	for _, name := range profiles.Names() {
 		sb.WriteString(fmt.Sprintf("#   %s\n", name))

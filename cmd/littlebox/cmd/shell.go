@@ -18,7 +18,7 @@ var shellCmd = &cobra.Command{
 	Use:          "shell",
 	Short:        "Open a debug shell in the container",
 	SilenceUsage: true,
-	Long: `Open an interactive bash shell in an agentbox container for debugging.
+	Long: `Open an interactive bash shell in a littlebox container for debugging.
 
 The shell command uses the same configuration (mounts, network) as the run command,
 but overrides the command to run /bin/bash for interactive debugging.
@@ -30,13 +30,13 @@ This is useful for:
 
 Examples:
   # Open shell with default Agentfile
-  agentbox shell
+  littlebox shell
 
   # Open shell with a specific config file
-  agentbox shell -c /path/to/Agentfile
+  littlebox shell -c /path/to/Agentfile
 
   # Force rebuild of derived image before opening shell
-  agentbox shell --rebuild`,
+  littlebox shell --rebuild`,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Load and validate configuration
 		cfg, err := loadAndValidateConfig()
