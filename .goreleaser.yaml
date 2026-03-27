@@ -1,8 +1,8 @@
 version: 2
 
 builds:
-  - main: ./cmd/agentbox
-    binary: agentbox
+  - main: ./cmd/littlebox
+    binary: littlebox
     ldflags:
       - -s -w
       - -X main.version={{ .Version }}
@@ -28,4 +28,4 @@ changelog:
 release:
   github:
     owner: gbrindisi
-    name: agentbox
+    name: littlebox

@@ -9,11 +9,11 @@ LDFLAGS := -s -w \
 	-X main.commit=$(COMMIT)
 
 build:
-	go build -ldflags '$(LDFLAGS)' -o bin/agentbox ./cmd/agentbox
+	go build -ldflags '$(LDFLAGS)' -o bin/littlebox ./cmd/littlebox
 
 install: build
 	install -d $(PREFIX)/bin
-	install -m 755 bin/agentbox $(PREFIX)/bin/agentbox
+	install -m 755 bin/littlebox $(PREFIX)/bin/littlebox
 
 test:
 	go test ./...

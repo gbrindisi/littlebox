@@ -48,19 +48,19 @@ func TestGet(t *testing.T) {
 			name:       "claude-code profile exists",
 			profile:    "claude-code",
 			wantFound:  true,
-			wantPrefix: "# agentbox configuration",
+			wantPrefix: "# littlebox configuration",
 		},
 		{
 			name:       "codex-cli profile exists",
 			profile:    "codex-cli",
 			wantFound:  true,
-			wantPrefix: "# agentbox configuration",
+			wantPrefix: "# littlebox configuration",
 		},
 		{
 			name:       "openhands profile exists",
 			profile:    "openhands",
 			wantFound:  true,
-			wantPrefix: "# agentbox configuration",
+			wantPrefix: "# littlebox configuration",
 		},
 		{
 			name:      "non-existent profile",

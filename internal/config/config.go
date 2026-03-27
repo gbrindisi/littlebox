@@ -1,7 +1,7 @@
-// Package config provides configuration parsing and management for agentbox.
+// Package config provides configuration parsing and management for littlebox.
 package config
 
-// Config represents the complete configuration for agentbox.
+// Config represents the complete configuration for littlebox.
 type Config struct {
 	Agent     AgentConfig     `yaml:"agent"`
 	Workspace WorkspaceConfig `yaml:"workspace"`

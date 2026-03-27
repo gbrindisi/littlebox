@@ -59,7 +59,7 @@ func Validate(cfg *Config) error {
 
 	// Print warnings to stderr (they don't prevent execution)
 	for _, w := range warns {
-		fmt.Fprintf(os.Stderr, "[agentbox] warning: %s\n", w.Message)
+		fmt.Fprintf(os.Stderr, "[littlebox] warning: %s\n", w.Message)
 	}
 
 	if len(errs) > 0 {
