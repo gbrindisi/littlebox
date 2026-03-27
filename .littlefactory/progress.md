@@ -3740,3 +3740,141 @@ Started: 2026-01-28T18:17:55.614524
 
 ---
 
+
+## [2026-03-27] - rename-to-littlebox-d3k
+- Deleted entire openspec/ directory (86 files, ~4400 lines of historical change artifacts)
+- Updated .gitignore: changed `/agentbox` to `/littlebox` for new binary name
+- Files changed:
+  - .gitignore (binary name reference updated)
+  - openspec/ (entire directory removed)
+- All tests pass (`make test`)
+- **Learnings for future iterations:**
+  - The openspec/ directory was the old artifact management system, now replaced by littlefactory
+  - Makefile build target still references `agentbox` binary name (separate task)
+---
+## Iteration 1
+
+- **Task:** rename-to-littlebox-d3k
+- **Status:** completed
+
+---
+
+
+## [2026-03-27] - rename-to-littlebox-m7p
+- Renamed Go module from github.com/gbrindisi/agentbox to github.com/gbrindisi/littlebox in go.mod
+- Renamed cmd/agentbox/ directory to cmd/littlebox/
+- Updated all import paths across 23 .go files
+- Fixed main.go import (cmd/agentbox/cmd -> cmd/littlebox/cmd) which wasn't caught by the bulk replace since the directory itself was renamed
+- Ran go mod tidy, go build ./..., and go test ./... -- all pass
+- Files changed: go.mod, cmd/littlebox/ (renamed from cmd/agentbox/), 15 internal/ files with updated imports
+- **Learnings for future iterations:**
+  - When renaming a Go module AND a cmd directory simultaneously, the main.go import path contains the directory name within the module path (e.g., cmd/agentbox/cmd). A bulk sed replacing the module prefix won't fix the directory component -- that needs a separate fix.
+  - The sed replacement caught both import paths and string literals (like the GitHub URL in init.go comments), which was the desired behavior.
+  - go.sum did not change after go mod tidy since only the module name changed, not dependencies.
+---
+## Iteration 2
+
+- **Task:** rename-to-littlebox-m7p
+- **Status:** completed
+
+---
+
+
+## [2026-03-27] - rename-to-littlebox-q2r
+- Renamed all user-facing "agentbox" strings to "littlebox" in cobra command tree
+- Updated root.go: Use field, Long description, version template
+- Updated run.go: Long description and all example commands
+- Updated shell.go: Long description and all example commands
+- Updated validate.go: example commands
+- Updated init.go: example commands and reference template header/profile hint
+- Updated init_test.go: test expectations for changed strings
+- Verified `littlebox --help` shows "littlebox" everywhere
+- All tests pass (`go test ./cmd/littlebox/...`)
+- Files changed: root.go, run.go, shell.go, validate.go, init.go, init_test.go
+- **Learnings for future iterations:**
+  - Embedded profile files (internal/config/profiles/Agentfile.*) still contain "agentbox" references -- these are a separate task scope
+  - init_test.go line 121 tests against embedded profile content, not generated template -- keep test expectations aligned with actual data source
+  - The `Use` field in cobra root command controls the binary name shown in all `--help` output including subcommand usage lines
+---
+## Iteration 3
+
+- **Task:** rename-to-littlebox-q2r
+- **Status:** completed
+
+---
+
+
+
+## [2026-03-27] - rename-to-littlebox-v5n
+- Renamed all Docker image references from agentbox/* to littlebox/* (base and build images)
+- Updated all "agentbox:" error message prefixes to "littlebox:" in libsandbox.c
+- Updated comments in Dockerfile, entrypoint.sh, init-firewall.sh
+- Updated all Go source comments referencing agentbox in internal/container/
+- Updated all test assertions across 6 test files (builder_test, builderror/formatter_test, builderror_integration_test, libsandbox_test, libsandbox_dns_test, output_test)
+- No AGENT_BOX_* env vars or agentbox=true container labels existed in source (only in change spec docs)
+- Zero remaining "agentbox" references in internal/container/ directory
+- Files changed: 16 files (builder.go, types.go, manager.go, embed.go, attach.go, wait.go, Dockerfile, entrypoint.sh, init-firewall.sh, libsandbox.c, builder_test.go, formatter_test.go, builderror_integration_test.go, libsandbox_test.go, libsandbox_dns_test.go, output_test.go)
+- **Learnings for future iterations:**
+  - internal/config/ files (config.go, validate.go, profiles/Agentfile.*, profiles/AGENTS.md, embed_test.go) still have agentbox references -- these are separate task scope
+  - libsandbox.c uses "agentbox:" prefix in fprintf error messages that test files match against -- always update both C source and Go test assertions together
+  - output_test.go references image name strings (littlebox/base:0.1.0) indirectly through test fixtures, not through the ImageTag() function -- update these manually
+---
+## Iteration 4
+
+- **Task:** rename-to-littlebox-v5n
+- **Status:** completed
+
+---
+
+
+
+## [2026-03-27] - rename-to-littlebox-h8w
+- Updated Makefile: binary name and build path from agentbox to littlebox
+- Updated .goreleaser.yaml: binary, main path, and release repo name to littlebox
+- Updated internal/config/config.go: package and struct comments from agentbox to littlebox
+- Updated internal/config/validate.go: warning prefix from [agentbox] to [littlebox]
+- Updated all 3 Agentfile.* profile templates: header comments from agentbox to littlebox
+- Updated internal/config/profiles/AGENTS.md: CLI command reference from agentbox to littlebox
+- Updated embed_test.go: expected content prefix from "# agentbox configuration" to "# littlebox configuration"
+- `make build` produces ./bin/littlebox successfully
+- All config tests pass
+- Files changed: Makefile, .goreleaser.yaml, config.go, validate.go, Agentfile.claude-code, Agentfile.codex-cli, Agentfile.openhands, AGENTS.md, embed_test.go
+- **Learnings for future iterations:**
+  - The .goreleaser.yaml release section has `name: <project>` under `github:` which also needs updating during renames
+  - validate.go has a `[agentbox]` prefix in warning stderr output -- easy to miss since it's a string literal not a variable
+  - embed_test.go tests profile content prefixes against the exact first line of Agentfile templates -- keep these in sync
+---
+## Iteration 5
+
+- **Task:** rename-to-littlebox-h8w
+- **Status:** completed
+
+---
+
+
+
+## [2026-03-27] - rename-to-littlebox-a9j
+- Updated README.md: all CLI examples, project name, installation instructions, GitHub URLs from agentbox to littlebox
+- Updated RELEASE.md: CLI version command from agentbox to littlebox
+- Updated Agentfile: header comment and GitHub URL
+- Updated Factoryfile.backup: agentbox command reference to littlebox
+- Fixed cmd/littlebox/cmd/init_test.go: test expectation for embedded profile header ("# littlebox configuration")
+- Fixed internal/config/redact_test.go: comment referencing old task name
+- Updated git remote from gbrindisi/agentbox to gbrindisi/littlebox
+- Final grep sweep confirmed zero agentbox references outside .littlefactory/changes/ and progress.md
+- All tests pass
+- Files changed: README.md, RELEASE.md, Agentfile, Factoryfile.backup, init_test.go, redact_test.go
+- **Learnings for future iterations:**
+  - The Agentfile in the repo root is a working config file (not a template) that also had agentbox references in its header comments
+  - Factoryfile.backup had an agentbox CLI invocation in the agent command definition
+  - init_test.go line 121 tests against the embedded profile header string -- must stay in sync with the Agentfile.* templates
+  - The redact_test.go had a comment referencing the old "agent-box" task naming convention
+  - Git remote URL needed updating separately from code -- not caught by grep sweeps of source files
+---
+## Iteration 6
+
+- **Task:** rename-to-littlebox-a9j
+- **Status:** completed
+
+---
+

@@ -1,5 +1,5 @@
 max_iterations: 10
-timeout: 1200
+timeout: 600
 default_agent: claude
 
 agents:
@@ -10,9 +10,3 @@ agents:
     #   STATIC_VAR: "literal value"
     #   DYNAMIC_VAR:
     #     shell: "command to evaluate"
-
-  ab:
-    command: "agentbox run -- "
-    env:
-      ANTHROPIC_API_KEY:
-        shell: "security find-generic-password -w -s \"Claude Code\""

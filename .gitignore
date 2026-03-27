@@ -34,9 +34,12 @@ go.work.sum
 
 # Claude Code
 .claude/settings.local.json
+.claude/skills/lf-*
 
 # Littlefactory runtime metadata
 .littlefactory/run_metadata.json
+.littlefactory/changes/
+.littlefactory/skills/
 
 # Test environment
 test-environment/
