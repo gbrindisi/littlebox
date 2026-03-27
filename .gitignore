@@ -19,7 +19,7 @@ go.work.sum
 # vendor/
 
 # Build output
-/agentbox
+/littlebox
 /bin/
 /dist/
 /build/
@@ -43,3 +43,4 @@ test-environment/
 
 # Pre-commit
 .pre-commit-config.yaml.bak
+.littlefactory/tasks.json
