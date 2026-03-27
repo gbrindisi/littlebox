@@ -13,8 +13,8 @@ import (
 
 	"github.com/docker/docker/api/types/build"
 	"github.com/docker/docker/pkg/jsonmessage"
-	"github.com/gbrindisi/agentbox/internal/container/builderror"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/container/builderror"
+	"github.com/gbrindisi/littlebox/internal/output"
 )
 
 // Version is the current version of agentbox.

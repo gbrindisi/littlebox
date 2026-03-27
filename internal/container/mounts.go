@@ -5,7 +5,7 @@ import (
 
 	"github.com/docker/docker/api/types/mount"
 
-	"github.com/gbrindisi/agentbox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config"
 )
 
 // BuildMounts creates the mount configuration for a container.

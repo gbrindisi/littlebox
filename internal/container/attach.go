@@ -9,7 +9,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/output"
 	"github.com/moby/term"
 )
 

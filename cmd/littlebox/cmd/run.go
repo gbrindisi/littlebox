@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/gbrindisi/agentbox/internal/container"
+	"github.com/gbrindisi/littlebox/internal/container"
 )
 
 var (

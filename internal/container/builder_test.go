@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/api/types/image"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/output"
 )
 
 func TestVersion(t *testing.T) {

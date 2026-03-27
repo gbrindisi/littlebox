@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gbrindisi/agentbox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config"
 	"gopkg.in/yaml.v3"
 )
 

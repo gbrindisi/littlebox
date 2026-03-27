@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/gbrindisi/agentbox/cmd/agentbox/cmd"
+	"github.com/gbrindisi/littlebox/cmd/littlebox/cmd"
 )
 
 var (

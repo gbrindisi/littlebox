@@ -10,8 +10,8 @@ import (
 
 	"github.com/docker/docker/client"
 
-	"github.com/gbrindisi/agentbox/internal/config"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/output"
 )
 
 // TestAttachContainerExitsCleanly verifies that AttachContainer returns promptly

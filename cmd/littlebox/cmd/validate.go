@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/gbrindisi/agentbox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config"
 )
 
 var validateCmd = &cobra.Command{

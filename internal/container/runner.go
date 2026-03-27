@@ -7,7 +7,7 @@ import (
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 
-	"github.com/gbrindisi/agentbox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config"
 )
 
 // CreateContainer creates a new container with the configuration from an Agentfile.

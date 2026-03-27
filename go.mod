@@ -1,4 +1,4 @@
-module github.com/gbrindisi/agentbox
+module github.com/gbrindisi/littlebox
 
 go 1.25.0
 

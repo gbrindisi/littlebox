@@ -12,7 +12,7 @@ import (
 	dockercontainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 
-	"github.com/gbrindisi/agentbox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config"
 )
 
 // TestDNSCachingWithHostname tests that DNS lookup followed by blocked connection shows hostname

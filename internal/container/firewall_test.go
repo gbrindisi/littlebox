@@ -10,8 +10,8 @@ import (
 	dockercontainer "github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 
-	"github.com/gbrindisi/agentbox/internal/config"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/output"
 )
 
 func TestFirewallBlocking(t *testing.T) {

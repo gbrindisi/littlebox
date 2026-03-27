@@ -6,9 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gbrindisi/agentbox/internal/config"
-	"github.com/gbrindisi/agentbox/internal/container"
-	"github.com/gbrindisi/agentbox/internal/output"
+	"github.com/gbrindisi/littlebox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/container"
+	"github.com/gbrindisi/littlebox/internal/output"
 )
 
 // runOptions configures how runContainer executes.

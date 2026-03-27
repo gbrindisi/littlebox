@@ -8,8 +8,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/gbrindisi/agentbox/internal/config"
-	"github.com/gbrindisi/agentbox/internal/config/profiles"
+	"github.com/gbrindisi/littlebox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config/profiles"
 )
 
 var initProfile string
@@ -67,7 +67,7 @@ func generateReferenceTemplate() string {
 
 	// Header with available profiles
 	sb.WriteString("# agentbox reference configuration\n")
-	sb.WriteString("# See: https://github.com/gbrindisi/agentbox\n")
+	sb.WriteString("# See: https://github.com/gbrindisi/littlebox\n")
 	sb.WriteString("#\n")
 	sb.WriteString("# Available profiles (use: agentbox init --profile <name>):\n")
 

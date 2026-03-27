@@ -13,7 +13,7 @@ import (
 	"github.com/docker/docker/api/types/build"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/jsonmessage"
-	"github.com/gbrindisi/agentbox/internal/container/builderror"
+	"github.com/gbrindisi/littlebox/internal/container/builderror"
 )
 
 // Manager handles Docker container lifecycle operations.

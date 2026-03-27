@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gbrindisi/agentbox/internal/config"
-	"github.com/gbrindisi/agentbox/internal/config/profiles"
+	"github.com/gbrindisi/littlebox/internal/config"
+	"github.com/gbrindisi/littlebox/internal/config/profiles"
 )
 
 func TestGenerateReferenceTemplate(t *testing.T) {
@@ -16,7 +16,7 @@ func TestGenerateReferenceTemplate(t *testing.T) {
 		if !strings.Contains(template, "# agentbox reference configuration") {
 			t.Error("expected reference configuration header")
 		}
-		if !strings.Contains(template, "https://github.com/gbrindisi/agentbox") {
+		if !strings.Contains(template, "https://github.com/gbrindisi/littlebox") {
 			t.Error("expected GitHub URL")
 		}
 	})
