@@ -24,7 +24,7 @@ goreleaser release --snapshot --clean
 This project follows [Semantic Versioning](https://semver.org/). The version string is injected at build time via `-ldflags` and is visible through:
 
 ```bash
-agentbox --version
+littlebox --version
 ```
 
 Local builds without a tag fall back to the short commit SHA (e.g. `47681b9-dirty`).

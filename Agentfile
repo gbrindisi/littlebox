@@ -1,5 +1,5 @@
-# agentbox configuration
-# See: https://github.com/gbrindisi/agentbox
+# littlebox configuration
+# See: https://github.com/gbrindisi/littlebox
 
 # Agent configuration
 agent:

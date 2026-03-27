@@ -202,7 +202,7 @@ func TestGetRedactedFiles_NestedDirectories(t *testing.T) {
 }
 
 // TestGetRedactedFiles_CommonPatterns tests common sensitive file patterns
-// as specified in task agent-box-ymu.3 acceptance criteria.
+// as specified in task littlebox-ymu.3 acceptance criteria.
 func TestGetRedactedFiles_CommonPatterns(t *testing.T) {
 	dir := t.TempDir()
 

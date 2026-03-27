@@ -118,7 +118,7 @@ func TestGetProfile_ClaudeCode(t *testing.T) {
 
 	// Verify embedded content has expected structure
 	t.Run("header", func(t *testing.T) {
-		if !strings.Contains(content, "# agentbox configuration") {
+		if !strings.Contains(content, "# littlebox configuration") {
 			t.Error("expected configuration header")
 		}
 	})

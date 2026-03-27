@@ -1,8 +1,8 @@
-# Agentbox
+# Littlebox
 
 A sandbox for running autonomous coding agents with network and filesystem isolation.
 
-Coding agents are most useful when they can run autonomously, but this introduces risks: rogue activities, data exfiltration, or unintended external communications. Agentbox provides a containerized sandbox around any agent, with sensible defaults for quick setup and enough flexibility to customize for your needs.
+Coding agents are most useful when they can run autonomously, but this introduces risks: rogue activities, data exfiltration, or unintended external communications. Littlebox provides a containerized sandbox around any agent, with sensible defaults for quick setup and enough flexibility to customize for your needs.
 
 (based on rationale outlined [here](https://cloudberry.engineering/article/on-sandboxing-agents/))
 
@@ -10,7 +10,7 @@ Coding agents are most useful when they can run autonomously, but this introduce
 
 Running agents autonomously means giving them significant control over your system. An agent with unrestricted network access could exfiltrate code to external servers. An agent with full filesystem access could read sensitive credentials or modify critical files.
 
-Agentbox implements defense in depth to mitigate these risks:
+Littlebox implements defense in depth to mitigate these risks:
 
 | Layer | Protection | What It Prevents |
 |-------|------------|------------------|
@@ -31,22 +31,22 @@ This is a best-effort, defense-in-depth approach. Container escape vulnerabiliti
 
 **Install:**
 ```bash
-git clone https://github.com/gbrindisi/agentbox.git
-cd agentbox
+git clone https://github.com/gbrindisi/littlebox.git
+cd littlebox
 make build
 sudo make install
 ```
 
 **Run:**
 ```bash
-agentbox init --profile claude-code
+littlebox init --profile claude-code
 export ANTHROPIC_API_KEY=sk-...
-agentbox run -- "2+2=?"
+littlebox run -- "2+2=?"
 ```
 
 Note: On macOS, use this to inherit an existing Claude Code session:
 ```bash
-ANTHROPIC_API_KEY=$(security find-generic-password -w -s "Claude Code") agentbox run -- "2+2=?"
+ANTHROPIC_API_KEY=$(security find-generic-password -w -s "Claude Code") littlebox run -- "2+2=?"
 ```
 
 ## Configuration
@@ -54,8 +54,8 @@ ANTHROPIC_API_KEY=$(security find-generic-password -w -s "Claude Code") agentbox
 The sandbox is defined in an `Agentfile`, a YAML configuration file auto-discovered in the current directory.
 
 ```yaml
-# agentbox configuration
-# See: https://github.com/gbrindisi/agentbox
+# littlebox configuration
+# See: https://github.com/gbrindisi/littlebox
 
 # Agent configuration
 agent:
@@ -154,7 +154,7 @@ The firewall uses iptables with a default-deny OUTPUT policy. At container start
 A companion `libsandbox.so` library is injected via `LD_PRELOAD` to intercept `connect()` calls. When a connection to a blocked IP is attempted, instead of a silent timeout, the agent receives an informative error message:
 
 ```
-agentbox: Connection to 203.0.113.50 blocked by sandbox firewall. This is not bypassable.
+littlebox: Connection to 203.0.113.50 blocked by sandbox firewall. This is not bypassable.
 ```
 
 This helps agents understand why a connection failed and adjust their behavior accordingly, rather than retrying indefinitely or misdiagnosing the issue.
@@ -207,47 +207,47 @@ container:
 
 ## CLI Commands
 
-### agentbox init
+### littlebox init
 
 Create a new Agentfile from a profile template.
 
 ```bash
-agentbox init                         # Uses claude-code profile
-agentbox init --profile claude-code   # Explicit profile
+littlebox init                         # Uses claude-code profile
+littlebox init --profile claude-code   # Explicit profile
 ```
 
-### agentbox run
+### littlebox run
 
 Run an agent in the sandbox.
 
 ```bash
-agentbox run                          # Run with auto-discovered Agentfile
-agentbox run -c /path/to/Agentfile    # Specific config file
-agentbox run -w /path/to/project      # Override workspace directory
-agentbox run --rebuild                # Force image rebuild
-agentbox run --tty                    # Force TTY allocation
-agentbox run --no-tty                 # Disable TTY allocation
-agentbox run --debug                  # Enable debug output
-agentbox run -- "your prompt here"    # Pass arguments to agent
+littlebox run                          # Run with auto-discovered Agentfile
+littlebox run -c /path/to/Agentfile    # Specific config file
+littlebox run -w /path/to/project      # Override workspace directory
+littlebox run --rebuild                # Force image rebuild
+littlebox run --tty                    # Force TTY allocation
+littlebox run --no-tty                 # Disable TTY allocation
+littlebox run --debug                  # Enable debug output
+littlebox run -- "your prompt here"    # Pass arguments to agent
 ```
 
-### agentbox validate
+### littlebox validate
 
 Validate an Agentfile without running.
 
 ```bash
-agentbox validate
-agentbox validate -c /path/to/Agentfile
+littlebox validate
+littlebox validate -c /path/to/Agentfile
 ```
 
-### agentbox shell
+### littlebox shell
 
 Open a debug shell in the container. Uses the same configuration as `run` but starts bash instead of the agent. Useful for testing firewall rules and inspecting the environment.
 
 ```bash
-agentbox shell                        # Open shell with auto-discovered Agentfile
-agentbox shell --rebuild              # Force image rebuild before opening shell
-agentbox shell --debug                # Enable debug output
+littlebox shell                        # Open shell with auto-discovered Agentfile
+littlebox shell --rebuild              # Force image rebuild before opening shell
+littlebox shell --debug                # Enable debug output
 ```
 
 ## Good to Know
