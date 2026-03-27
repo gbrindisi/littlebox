@@ -25,8 +25,8 @@ func TestImageTag(t *testing.T) {
 	tag := ImageTag()
 
 	// Should have correct prefix
-	if !strings.HasPrefix(tag, "agentbox/base:") {
-		t.Errorf("ImageTag should start with 'agentbox/base:', got: %s", tag)
+	if !strings.HasPrefix(tag, "littlebox/base:") {
+		t.Errorf("ImageTag should start with 'littlebox/base:', got: %s", tag)
 	}
 
 	// Should include version
@@ -34,8 +34,8 @@ func TestImageTag(t *testing.T) {
 		t.Errorf("ImageTag should contain version %s, got: %s", Version, tag)
 	}
 
-	// Should be exactly agentbox/base:VERSION
-	expected := "agentbox/base:" + Version
+	// Should be exactly littlebox/base:VERSION
+	expected := "littlebox/base:" + Version
 	if tag != expected {
 		t.Errorf("ImageTag() = %s, want %s", tag, expected)
 	}
@@ -96,12 +96,12 @@ func TestDerivedImageTag(t *testing.T) {
 		tag := DerivedImageTag(script, workspacePath)
 
 		// Should have correct prefix
-		if !strings.HasPrefix(tag, "agentbox/build:") {
-			t.Errorf("DerivedImageTag should start with 'agentbox/build:', got: %s", tag)
+		if !strings.HasPrefix(tag, "littlebox/build:") {
+			t.Errorf("DerivedImageTag should start with 'littlebox/build:', got: %s", tag)
 		}
 
 		// Hash portion should be 12 characters
-		hashPart := strings.TrimPrefix(tag, "agentbox/build:")
+		hashPart := strings.TrimPrefix(tag, "littlebox/build:")
 		if len(hashPart) != 12 {
 			t.Errorf("Hash portion should be 12 characters, got %d: %s", len(hashPart), hashPart)
 		}
@@ -157,7 +157,7 @@ func TestDerivedImageTag(t *testing.T) {
 	t.Run("empty script works", func(t *testing.T) {
 		tag := DerivedImageTag("", workspacePath)
 
-		if !strings.HasPrefix(tag, "agentbox/build:") {
+		if !strings.HasPrefix(tag, "littlebox/build:") {
 			t.Errorf("Empty script should still produce valid tag, got: %s", tag)
 		}
 	})
@@ -168,7 +168,7 @@ apt-get install -y curl
 curl -fsSL https://example.com/install.sh | bash`
 		tag := DerivedImageTag(script, workspacePath)
 
-		if !strings.HasPrefix(tag, "agentbox/build:") {
+		if !strings.HasPrefix(tag, "littlebox/build:") {
 			t.Errorf("Multiline script should produce valid tag, got: %s", tag)
 		}
 	})

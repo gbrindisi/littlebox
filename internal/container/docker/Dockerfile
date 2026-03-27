@@ -1,4 +1,4 @@
-# agentbox base image
+# littlebox base image
 # This image provides a secure sandbox environment for running AI coding agents.
 # It includes network firewall capabilities and runs as a non-root user.
 

@@ -192,7 +192,7 @@ func TestDNSCachingWithoutHostname(t *testing.T) {
 	// The message should be "Connection to 93.184.216.34 blocked" not "Connection to example.com (93.184.216.34) blocked"
 	lines := strings.Split(logs, "\n")
 	for _, line := range lines {
-		if strings.Contains(line, "agentbox: Connection to") && strings.Contains(line, "blocked") {
+		if strings.Contains(line, "littlebox: Connection to") && strings.Contains(line, "blocked") {
 			// This line is the error message - it should NOT contain both IP and hostname
 			if strings.Contains(line, "example.com") {
 				t.Errorf("Expected error message to NOT contain hostname when no DNS lookup occurred, got line: %s", line)
@@ -297,7 +297,7 @@ func TestDNSCacheTTLExpiration(t *testing.T) {
 			foundExpirationMsg = true
 			// Look at subsequent lines for the error message
 			for j := i + 1; j < len(lines); j++ {
-				if strings.Contains(lines[j], "agentbox: Connection to") && strings.Contains(lines[j], "blocked") {
+				if strings.Contains(lines[j], "littlebox: Connection to") && strings.Contains(lines[j], "blocked") {
 					// This should NOT contain hostname (cache expired)
 					if strings.Contains(lines[j], "example.com") {
 						t.Errorf("Expected error message after TTL expiration to NOT contain hostname, got line: %s", lines[j])
@@ -362,7 +362,7 @@ func TestDNSCacheThreadIsolation(t *testing.T) {
 
 					# Immediately try to connect (should use cached hostname)
 					echo "Process $$: Attempting connection to $IP"
-					curl --max-time 5 http://$IP 2>&1 | grep -i "agentbox: Connection"
+					curl --max-time 5 http://$IP 2>&1 | grep -i "littlebox: Connection"
 					echo "Process $$: Done"
 				}
 
@@ -428,7 +428,7 @@ func TestDNSCacheThreadIsolation(t *testing.T) {
 	// Verify both connections were blocked
 	// Since processes may have different thread-local caches, we just verify that
 	// the connections were blocked (hostname may or may not appear depending on timing)
-	if !strings.Contains(logs, "agentbox: Connection") {
+	if !strings.Contains(logs, "littlebox: Connection") {
 		t.Errorf("Expected connection block messages, got logs:\n%s", logs)
 	}
 

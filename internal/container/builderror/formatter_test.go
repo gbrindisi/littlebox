@@ -270,7 +270,7 @@ func TestCollector_Format(t *testing.T) {
 		},
 		{
 			name: "multiline script error",
-			dockerfile: "FROM agentbox/base:0.1.0\n" +
+			dockerfile: "FROM littlebox/base:0.1.0\n" +
 				"USER root\n" +
 				"RUN <<'SCRIPT'\n" +
 				"set -ex\n" +
@@ -287,7 +287,7 @@ func TestCollector_Format(t *testing.T) {
 					},
 				},
 			},
-			want: " 1 | FROM agentbox/base:0.1.0\n" +
+			want: " 1 | FROM littlebox/base:0.1.0\n" +
 				" 2 | USER root\n" +
 				" 3 | RUN <<'SCRIPT'\n" +
 				" 4 | set -ex\n" +
@@ -348,12 +348,12 @@ func TestCollector_Format_Integration(t *testing.T) {
 	aux3, _ := createTraceAux(resp3)
 	_ = collector.Add(aux3)
 
-	dockerfile := "FROM agentbox/base:0.1.0\nUSER root\nRUN <<'SCRIPT'\nset -ex\ncurl -fsSL https://example.com/install.sh | bash\nSCRIPT"
+	dockerfile := "FROM littlebox/base:0.1.0\nUSER root\nRUN <<'SCRIPT'\nset -ex\ncurl -fsSL https://example.com/install.sh | bash\nSCRIPT"
 
 	result := collector.Format(dockerfile)
 
 	// Verify key components are present
-	if !strings.Contains(result, " 1 | FROM agentbox/base:0.1.0") {
+	if !strings.Contains(result, " 1 | FROM littlebox/base:0.1.0") {
 		t.Error("Missing FROM line")
 	}
 	if !strings.Contains(result, "Error: exit code 1") {

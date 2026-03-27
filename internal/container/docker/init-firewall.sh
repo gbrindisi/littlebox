@@ -1,5 +1,5 @@
 #!/bin/bash
-# agentbox firewall initialization script
+# littlebox firewall initialization script
 # This script sets up iptables rules with ipset for efficient network filtering.
 # It runs directly as root from the entrypoint (container starts as root).
 #

@@ -48,7 +48,7 @@ func (m *Manager) Client() *client.Client {
 	return m.client
 }
 
-// BuildImage builds the agentbox Docker image from embedded assets.
+// BuildImage builds the littlebox Docker image from embedded assets.
 func (m *Manager) BuildImage(ctx context.Context, opts *BuildOptions) error {
 	if opts == nil {
 		opts = &BuildOptions{}

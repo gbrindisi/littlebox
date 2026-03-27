@@ -16,13 +16,13 @@ func TestBulletPrint(t *testing.T) {
 		{
 			name:      "quiet mode prints bullet message",
 			verbosity: Quiet,
-			msg:       "Using cached image: agentbox/base:0.1.0",
-			want:      "● Using cached image: agentbox/base:0.1.0\r\n",
+			msg:       "Using cached image: littlebox/base:0.1.0",
+			want:      "● Using cached image: littlebox/base:0.1.0\r\n",
 		},
 		{
 			name:      "debug mode prints nothing",
 			verbosity: Debug,
-			msg:       "Using cached image: agentbox/base:0.1.0",
+			msg:       "Using cached image: littlebox/base:0.1.0",
 			want:      "",
 		},
 	}
@@ -42,13 +42,13 @@ func TestStatusWriter_QuietMode(t *testing.T) {
 	var buf bytes.Buffer
 	sw := NewStatusWriter(&buf, Quiet)
 
-	sw.Start("Building image: agentbox/base:0.1.0, this may take a while")
-	if got := buf.String(); got != "● Building image: agentbox/base:0.1.0, this may take a while..." {
-		t.Errorf("Start() = %q, want %q", got, "● Building image: agentbox/base:0.1.0, this may take a while...")
+	sw.Start("Building image: littlebox/base:0.1.0, this may take a while")
+	if got := buf.String(); got != "● Building image: littlebox/base:0.1.0, this may take a while..." {
+		t.Errorf("Start() = %q, want %q", got, "● Building image: littlebox/base:0.1.0, this may take a while...")
 	}
 
 	sw.Done()
-	want := "● Building image: agentbox/base:0.1.0, this may take a while... done\r\n"
+	want := "● Building image: littlebox/base:0.1.0, this may take a while... done\r\n"
 	if got := buf.String(); got != want {
 		t.Errorf("Done() = %q, want %q", got, want)
 	}
@@ -58,7 +58,7 @@ func TestStatusWriter_DebugMode(t *testing.T) {
 	var buf bytes.Buffer
 	sw := NewStatusWriter(&buf, Debug)
 
-	sw.Start("Building image: agentbox/base:0.1.0, this may take a while")
+	sw.Start("Building image: littlebox/base:0.1.0, this may take a while")
 	sw.Done()
 
 	if got := buf.String(); got != "" {

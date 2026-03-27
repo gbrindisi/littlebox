@@ -322,7 +322,7 @@ exit 1`
 	// 3. Build output (if collected by BuildKit traces)
 	// Note: The exact format depends on how BuildKit reports logs
 	// We just verify the output is structured and includes the Dockerfile context
-	if !strings.Contains(errOutput, "FROM agentbox/base") {
+	if !strings.Contains(errOutput, "FROM littlebox/base") {
 		t.Errorf("expected formatted Dockerfile in error output, got:\n%s", errOutput)
 	}
 }

@@ -117,7 +117,7 @@ func AttachContainer(ctx context.Context, cli *client.Client, containerID string
 		if rawErr != nil {
 			// Log but continue - raw mode is nice to have but not critical
 			// This can fail if stdin is not a terminal (e.g., piped input)
-			_, _ = os.Stderr.WriteString("[agentbox] warning: could not set raw terminal: " + rawErr.Error() + "\n")
+			_, _ = os.Stderr.WriteString("[littlebox] warning: could not set raw terminal: " + rawErr.Error() + "\n")
 		} else {
 			defer func() { _ = term.RestoreTerminal(os.Stdin.Fd(), oldState) }()
 		}

@@ -1,4 +1,4 @@
-// Package container provides Docker container management for agentbox.
+// Package container provides Docker container management for littlebox.
 package container
 
 import (
@@ -17,29 +17,29 @@ import (
 	"github.com/gbrindisi/littlebox/internal/output"
 )
 
-// Version is the current version of agentbox.
-// This is used for image tagging to enable cache invalidation when agentbox is updated.
+// Version is the current version of littlebox.
+// This is used for image tagging to enable cache invalidation when littlebox is updated.
 const Version = "0.1.0"
 
-// ImageTag returns the versioned image tag for agentbox.
-// Format: agentbox/base:X.X.X
+// ImageTag returns the versioned image tag for littlebox.
+// Format: littlebox/base:X.X.X
 func ImageTag() string {
-	return fmt.Sprintf("agentbox/base:%s", Version)
+	return fmt.Sprintf("littlebox/base:%s", Version)
 }
 
 // DerivedImageTag returns the image tag for a derived image based on the build script and workspace path.
 // The tag is computed as a SHA256 hash of the build script + null byte + workspace path, using the first 12 characters.
 // The null byte separator prevents collision attacks (e.g., script "A" + path "B" vs script "AB").
-// Format: agentbox/build:<sha256(buildScript + "\x00" + workspacePath)[:12]>
+// Format: littlebox/build:<sha256(buildScript + "\x00" + workspacePath)[:12]>
 func DerivedImageTag(buildScript string, workspacePath string) string {
 	// Hash buildScript + null byte + workspacePath for workspace isolation
 	hashInput := buildScript + "\x00" + workspacePath
 	hash := sha256.Sum256([]byte(hashInput))
 	hashStr := hex.EncodeToString(hash[:])
-	return fmt.Sprintf("agentbox/build:%s", hashStr[:12])
+	return fmt.Sprintf("littlebox/build:%s", hashStr[:12])
 }
 
-// EnsureImage ensures the agentbox image is available, building it if necessary.
+// EnsureImage ensures the littlebox image is available, building it if necessary.
 // If forceBuild is true, the image is rebuilt even if it exists.
 // The output writer receives build progress messages.
 // The verbosity parameter controls output formatting: Quiet shows bullet-prefixed messages,
@@ -126,7 +126,7 @@ func (m *Manager) EnsureDerivedImage(ctx context.Context, buildScript string, wo
 }
 
 // generateDerivedDockerfile generates a Dockerfile for a derived image.
-// The Dockerfile extends agentbox/base and runs the build script as root.
+// The Dockerfile extends littlebox/base and runs the build script as root.
 // The image remains USER root - the entrypoint handles privilege drop to agent via setpriv.
 func generateDerivedDockerfile(buildScript string) string {
 	return fmt.Sprintf(`FROM %s

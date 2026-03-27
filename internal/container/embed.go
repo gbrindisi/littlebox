@@ -1,4 +1,4 @@
-// Package container provides Docker container management for agentbox.
+// Package container provides Docker container management for littlebox.
 package container
 
 import (

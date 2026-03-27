@@ -139,8 +139,8 @@ curl --max-time 5 https://example.com 2>&1
 		}
 
 		// Verify the custom error message appears in logs
-		if !strings.Contains(logs, "agentbox: Connection to") {
-			t.Errorf("Expected custom error message starting with 'agentbox: Connection to', got logs:\n%s", logs)
+		if !strings.Contains(logs, "littlebox: Connection to") {
+			t.Errorf("Expected custom error message starting with 'littlebox: Connection to', got logs:\n%s", logs)
 		}
 		if !strings.Contains(logs, "blocked by sandbox firewall") {
 			t.Errorf("Expected error message to mention 'blocked by sandbox firewall', got logs:\n%s", logs)
@@ -197,7 +197,7 @@ curl --max-time 5 https://example.com 2>&1
 		}
 
 		// Verify NO sandbox error message appears (should pass through silently)
-		if strings.Contains(logs, "agentbox: Connection to") {
+		if strings.Contains(logs, "littlebox: Connection to") {
 			t.Errorf("Expected no sandbox error message for allowed connection, but got:\n%s", logs)
 		}
 	})
@@ -259,7 +259,7 @@ curl --max-time 5 https://example.com 2>&1
 		}
 
 		// Verify no sandbox error message for allowed CIDR
-		if strings.Contains(logs, "agentbox: Connection to") && strings.Contains(logs, "blocked") {
+		if strings.Contains(logs, "littlebox: Connection to") && strings.Contains(logs, "blocked") {
 			t.Errorf("Expected no block message for IP in allowed CIDR range, got:\n%s", logs)
 		}
 	})

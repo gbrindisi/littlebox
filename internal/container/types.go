@@ -4,10 +4,10 @@ import (
 	"io"
 )
 
-// BuildOptions specifies options for building the agentbox image.
+// BuildOptions specifies options for building the littlebox image.
 type BuildOptions struct {
 	// ImageName is the name:tag for the built image.
-	// Defaults to "agentbox:latest".
+	// Defaults to "littlebox:latest".
 	ImageName string
 
 	// BuildArgs are additional build arguments to pass to Docker.
@@ -20,6 +20,6 @@ type BuildOptions struct {
 	Output io.Writer
 }
 
-// DefaultImageName is the default name for the agentbox image.
+// DefaultImageName is the default name for the littlebox image.
 // This uses the versioned ImageTag() for cache invalidation.
 var DefaultImageName = ImageTag()

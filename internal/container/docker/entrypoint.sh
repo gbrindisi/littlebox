@@ -1,5 +1,5 @@
 #!/bin/bash
-# agentbox container entrypoint
+# littlebox container entrypoint
 # This script initializes the firewall as root and then drops privileges
 # to the agent user before executing the agent command.
 #
@@ -18,7 +18,7 @@ log() {
     echo "[entrypoint] $*"
 }
 
-log "Starting agentbox container"
+log "Starting littlebox container"
 
 # 1. Verify we're running as root (expected since Dockerfile has USER root)
 if [ "$(id -u)" -ne 0 ]; then

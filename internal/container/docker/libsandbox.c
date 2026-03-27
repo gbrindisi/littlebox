@@ -57,7 +57,7 @@ static int num_allowed_ips = 0;
 static void init_real_connect(void) {
     real_connect = dlsym(RTLD_NEXT, "connect");
     if (!real_connect) {
-        fprintf(stderr, "agentbox: Failed to load real connect(): %s\n", dlerror());
+        fprintf(stderr, "littlebox: Failed to load real connect(): %s\n", dlerror());
         exit(1);
     }
 }
@@ -66,7 +66,7 @@ static void init_real_connect(void) {
 static void init_real_getaddrinfo(void) {
     real_getaddrinfo = dlsym(RTLD_NEXT, "getaddrinfo");
     if (!real_getaddrinfo) {
-        fprintf(stderr, "agentbox: Failed to load real getaddrinfo(): %s\n", dlerror());
+        fprintf(stderr, "littlebox: Failed to load real getaddrinfo(): %s\n", dlerror());
         exit(1);
     }
 }
@@ -75,7 +75,7 @@ static void init_real_getaddrinfo(void) {
 static void init_real_gethostbyname(void) {
     real_gethostbyname = dlsym(RTLD_NEXT, "gethostbyname");
     if (!real_gethostbyname) {
-        fprintf(stderr, "agentbox: Failed to load real gethostbyname(): %s\n", dlerror());
+        fprintf(stderr, "littlebox: Failed to load real gethostbyname(): %s\n", dlerror());
         exit(1);
     }
 }
@@ -127,7 +127,7 @@ static void load_allowed_ips(void) {
     fp = fopen("/run/sandbox/allowed_ips", "r");
     if (!fp) {
         // Fail-open for compatibility
-        fprintf(stderr, "agentbox: Warning - /run/sandbox/allowed_ips not found, allowing all connections\n");
+        fprintf(stderr, "littlebox: Warning - /run/sandbox/allowed_ips not found, allowing all connections\n");
         initialized = -1;  // Special flag: allow all
         return;
     }
@@ -444,9 +444,9 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 
         // Format error message based on whether hostname is available
         if (hostname) {
-            fprintf(stderr, "agentbox: Connection to %s (%s) blocked by sandbox firewall. This is not bypassable.\n", hostname, ip_str);
+            fprintf(stderr, "littlebox: Connection to %s (%s) blocked by sandbox firewall. This is not bypassable.\n", hostname, ip_str);
         } else {
-            fprintf(stderr, "agentbox: Connection to %s blocked by sandbox firewall. This is not bypassable.\n", ip_str);
+            fprintf(stderr, "littlebox: Connection to %s blocked by sandbox firewall. This is not bypassable.\n", ip_str);
         }
 
         errno = ECONNREFUSED;
