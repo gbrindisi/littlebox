@@ -1,6 +1,12 @@
 // Package config provides configuration parsing and management for littlebox.
 package config
 
+import (
+	"fmt"
+
+	"gopkg.in/yaml.v3"
+)
+
 // Config represents the complete configuration for littlebox.
 type Config struct {
 	Agent     AgentConfig     `yaml:"agent"`
@@ -14,11 +20,11 @@ type Config struct {
 
 // AgentConfig defines the agent to run inside the container.
 type AgentConfig struct {
-	Command        []string `yaml:"command,omitempty"`
-	Args           []string `yaml:"args,omitempty"`
-	Env            []EnvVar `yaml:"env,omitempty"`
-	EnvPassthrough []string `yaml:"env_passthrough,omitempty"`
-	BuildScript    string   `yaml:"build_script,omitempty"`
+	Command        []string              `yaml:"command,omitempty"`
+	Args           []string              `yaml:"args,omitempty"`
+	Env            []EnvVar              `yaml:"env,omitempty"`
+	EnvPassthrough []EnvPassthroughEntry `yaml:"env_passthrough,omitempty"`
+	BuildScript    string                `yaml:"build_script,omitempty"`
 	// ImageScope controls derived image caching: "workspace" (default) builds a
 	// separate image per workspace path; "shared" reuses one image per build script.
 	ImageScope string `yaml:"image_scope,omitempty"`
@@ -77,4 +83,53 @@ type ContainerConfig struct {
 type EnvVar struct {
 	Name  string `yaml:"name"`
 	Value string `yaml:"value,omitempty"`
+}
+
+// EnvPassthroughEntry is a single agent.env_passthrough item. In YAML it may be
+// a plain string (optional variable or glob pattern) or a mapping
+// {name: FOO, required: true}.
+type EnvPassthroughEntry struct {
+	Name     string `yaml:"name"`
+	Required bool   `yaml:"required,omitempty"`
+}
+
+// UnmarshalYAML accepts either a scalar name or a {name, required} mapping.
+func (e *EnvPassthroughEntry) UnmarshalYAML(node *yaml.Node) error {
+	switch node.Kind {
+	case yaml.ScalarNode:
+		e.Name = node.Value
+		e.Required = false
+		return nil
+	case yaml.MappingNode:
+		type raw EnvPassthroughEntry
+		var r raw
+		if err := node.Decode(&r); err != nil {
+			return err
+		}
+		if r.Name == "" {
+			return fmt.Errorf("line %d: env_passthrough entry requires a non-empty 'name'", node.Line)
+		}
+		*e = EnvPassthroughEntry(r)
+		return nil
+	default:
+		return fmt.Errorf("line %d: env_passthrough entry must be a string or a {name, required} mapping", node.Line)
+	}
+}
+
+// MarshalYAML emits a plain string for optional entries.
+func (e EnvPassthroughEntry) MarshalYAML() (interface{}, error) {
+	if !e.Required {
+		return e.Name, nil
+	}
+	type raw EnvPassthroughEntry
+	return raw(e), nil
+}
+
+// EnvPassthroughNames returns the names/patterns of the given entries.
+func EnvPassthroughNames(entries []EnvPassthroughEntry) []string {
+	names := make([]string, 0, len(entries))
+	for _, e := range entries {
+		names = append(names, e.Name)
+	}
+	return names
 }
