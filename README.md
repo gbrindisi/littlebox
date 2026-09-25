@@ -149,6 +149,21 @@ agent:
     - AWS_*                # All AWS variables
 ```
 
+Set fixed values with `env` (top level) or `agent.env`. Fixed values override
+passthrough values of the same name, and `agent.env` overrides top-level `env`.
+Names must match `[A-Za-z_][A-Za-z0-9_]*`.
+
+```yaml
+env:
+  - name: LOG_LEVEL
+    value: info
+
+agent:
+  env:
+    - name: DISABLE_TELEMETRY
+      value: "1"
+```
+
 ### Mounts
 
 Mount host directories into the container:
@@ -168,6 +183,12 @@ mounts:
 The firewall uses iptables with a default-deny OUTPUT policy. At container startup, allowed domains are resolved to IP addresses using `dig` and stored in an ipset for efficient matching. DNS queries are restricted to the container's DNS server only. IPv6 is blocked by default to prevent bypass.
 
 A companion `libsandbox.so` library is injected via `LD_PRELOAD` to intercept `connect()` calls. When a connection to a blocked IP is attempted, instead of a silent timeout, the agent receives an informative error message:
+
+```
+littlebox: Connection to example.com (203.0.113.50) blocked by sandbox firewall. This is not bypassable.
+```
+
+The library also intercepts `getaddrinfo()` and `gethostbyname()`, caching IPv4 lookups for 2 seconds, so the error can name the domain. Without a recent lookup, only the IP is shown:
 
 ```
 littlebox: Connection to 203.0.113.50 blocked by sandbox firewall. This is not bypassable.
@@ -277,6 +298,10 @@ littlebox shell --debug                # Enable debug output
 - **DNS at startup**: Domain names are resolved to IPs when the container starts. Long-running containers won't pick up DNS changes.
 - **Container escapes**: A container escape vulnerability would bypass all protections. This is defense in depth, not a security guarantee.
 - **Mount access**: The agent has full access to all mounted directories within the container.
+
+### Signals and Cleanup
+
+`SIGINT`, `SIGTERM` and `SIGQUIT` are forwarded to the container. On `SIGHUP` (e.g. the terminal or tmux window is closed), littlebox stops the container (SIGTERM, then SIGKILL after 10 seconds) and removes it, so no orphaned containers are left behind.
 
 ### File Ownership Issues
 
