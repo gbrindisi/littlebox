@@ -29,7 +29,9 @@ func ApplyDefaults(cfg *Config) error {
 }
 
 func applyAgentDefaults(cfg *Config) error {
-	// No defaults to apply - all agent fields must be specified explicitly
+	if cfg.Agent.ImageScope == "" {
+		cfg.Agent.ImageScope = ImageScopeWorkspace
+	}
 	return nil
 }
 

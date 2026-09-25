@@ -43,7 +43,7 @@ func runContainer(ctx context.Context, opts runOptions) (int, error) {
 	// Determine which image to use: derived image if BuildScript is set, otherwise base image
 	imageTag := container.ImageTag()
 	if opts.cfg.Agent.BuildScript != "" {
-		derivedTag, err := mgr.EnsureDerivedImage(ctx, opts.cfg.Agent.BuildScript, opts.cfg.Workspace.Path, opts.rebuild, verbosity, os.Stderr)
+		derivedTag, err := mgr.EnsureDerivedImage(ctx, opts.cfg.Agent.BuildScript, opts.cfg.ImageScopeKey(), opts.rebuild, verbosity, os.Stderr)
 		if err != nil {
 			return 1, fmt.Errorf("failed to ensure derived image: %w", err)
 		}

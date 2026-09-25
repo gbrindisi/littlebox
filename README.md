@@ -119,6 +119,13 @@ agent:
     npm install -g my-tool
 ```
 
+By default the derived image is also keyed on the workspace path, so each new workspace triggers its own build. Set `agent.image_scope: shared` to reuse a single image for every workspace with the same build script:
+
+```yaml
+agent:
+  image_scope: shared   # workspace (default) | shared
+```
+
 Use `--rebuild` to force a rebuild (Docker layer cache still applies). Runtime execution always runs as unprivileged `agent` user.
 
 ### Environment Variables
