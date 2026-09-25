@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"sort"
 	"strings"
@@ -192,18 +193,30 @@ func sortedPresetNames() []string {
 	return names
 }
 
-func validateEnvPassthrough(vars []string) ValidationErrors {
+func validateEnvPassthrough(entries []EnvPassthroughEntry) ValidationErrors {
 	var errs ValidationErrors
 
-	for _, v := range vars {
-		if isGlobPattern(v) {
-			continue // Skip glob patterns - they match zero or more variables
+	for _, e := range entries {
+		if isGlobPattern(e.Name) {
+			// Globs match zero or more variables at runtime; they cannot be required.
+			if e.Required {
+				errs = append(errs, ValidationError{
+					Field:   "agent.env_passthrough",
+					Message: fmt.Sprintf("glob pattern %s cannot be marked required", e.Name),
+				})
+			}
+			continue
 		}
-		if os.Getenv(v) == "" {
+		if _, ok := os.LookupEnv(e.Name); ok && os.Getenv(e.Name) != "" {
+			continue
+		}
+		if e.Required {
 			errs = append(errs, ValidationError{
 				Field:   "agent.env_passthrough",
-				Message: fmt.Sprintf("required environment variable %s is not set", v),
+				Message: fmt.Sprintf("required environment variable %s is not set", e.Name),
 			})
+		} else {
+			slog.Debug("optional env_passthrough variable not set; skipping", "name", e.Name)
 		}
 	}
 

@@ -19,6 +19,9 @@ agent:
 
   # Environment variables to pass from host to container
   # Supports glob patterns like CLAUDE_CODE_*
+  # Exact names are optional (skipped if unset). To require one:
+  #   - name: MY_VAR
+  #     required: true
   env_passthrough:
    - ANTHROPIC_API_KEY
    - DISABLE_TELEMETRY

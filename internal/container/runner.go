@@ -28,7 +28,7 @@ func CreateContainerWithOptions(ctx context.Context, cli *client.Client, cfg *co
 	}
 	mounts := BuildMounts(cfg)
 
-	env := config.ResolveEnvPassthrough(cfg.Agent.EnvPassthrough)
+	env := config.ResolveEnvPassthrough(config.EnvPassthroughNames(cfg.Agent.EnvPassthrough))
 	env = append(env, "ALLOWED_DOMAINS="+strings.Join(cfg.Network.Allow, ","))
 
 	cmd := append([]string{}, cfg.Agent.Command...)

@@ -71,6 +71,9 @@ agent:
 
   # Environment variables to pass from host to container
   # Supports glob patterns like CLAUDE_CODE_*
+  # Exact names are optional (skipped if unset). To require one:
+  #   - name: MY_VAR
+  #     required: true
   env_passthrough:
    - ANTHROPIC_API_KEY
   #  - CLAUDE_CODE_*
@@ -130,12 +133,18 @@ Use `--rebuild` to force a rebuild (Docker layer cache still applies). Runtime e
 
 ### Environment Variables
 
-Pass environment variables from host to container using glob patterns:
+Pass environment variables from host to container by exact name or glob pattern.
+Exact names are optional by default: if unset on the host they are silently
+skipped. Mark a variable as required with the mapping form; validation then
+fails if it is unset or empty. Glob patterns cannot be required.
 
 ```yaml
 agent:
   env_passthrough:
-    - ANTHROPIC_API_KEY    # Exact match
+    - ANTHROPIC_API_KEY    # Exact match, optional
+    - OPENAI_API_KEY       # Optional
+    - name: GITHUB_TOKEN   # Exact match, required
+      required: true
     - CLAUDE_CODE_*        # Glob pattern
     - AWS_*                # All AWS variables
 ```
