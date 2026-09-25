@@ -71,6 +71,9 @@ agent:
 
   # Environment variables to pass from host to container
   # Supports glob patterns like CLAUDE_CODE_*
+  # Exact names are optional (skipped if unset). To require one:
+  #   - name: MY_VAR
+  #     required: true
   env_passthrough:
    - ANTHROPIC_API_KEY
   #  - CLAUDE_CODE_*
@@ -119,16 +122,29 @@ agent:
     npm install -g my-tool
 ```
 
+By default the derived image is also keyed on the workspace path, so each new workspace triggers its own build. Set `agent.image_scope: shared` to reuse a single image for every workspace with the same build script:
+
+```yaml
+agent:
+  image_scope: shared   # workspace (default) | shared
+```
+
 Use `--rebuild` to force a rebuild (Docker layer cache still applies). Runtime execution always runs as unprivileged `agent` user.
 
 ### Environment Variables
 
-Pass environment variables from host to container using glob patterns:
+Pass environment variables from host to container by exact name or glob pattern.
+Exact names are optional by default: if unset on the host they are silently
+skipped. Mark a variable as required with the mapping form; validation then
+fails if it is unset or empty. Glob patterns cannot be required.
 
 ```yaml
 agent:
   env_passthrough:
-    - ANTHROPIC_API_KEY    # Exact match
+    - ANTHROPIC_API_KEY    # Exact match, optional
+    - OPENAI_API_KEY       # Optional
+    - name: GITHUB_TOKEN   # Exact match, required
+      required: true
     - CLAUDE_CODE_*        # Glob pattern
     - AWS_*                # All AWS variables
 ```
@@ -228,8 +244,12 @@ littlebox run --rebuild                # Force image rebuild
 littlebox run --tty                    # Force TTY allocation
 littlebox run --no-tty                 # Disable TTY allocation
 littlebox run --debug                  # Enable debug output
+littlebox run --name my-agent          # Set container name
+littlebox run --label k=v --label a=b  # Add container labels (repeatable)
 littlebox run -- "your prompt here"    # Pass arguments to agent
 ```
+
+Every container gets the label `littlebox=1` (find them with `docker ps --filter label=littlebox=1`). Label keys must match `[A-Za-z0-9._/-]` (alphanumeric at both ends); the `littlebox` key is reserved.
 
 ### littlebox validate
 

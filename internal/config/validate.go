@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"sort"
 	"strings"
@@ -56,6 +57,8 @@ func Validate(cfg *Config) error {
 	warns = append(warns, networkWarns...)
 
 	errs = append(errs, validateEnvPassthrough(cfg.Agent.EnvPassthrough)...)
+	errs = append(errs, validateEnvVars("env", cfg.Env)...)
+	errs = append(errs, validateEnvVars("agent.env", cfg.Agent.Env)...)
 
 	// Print warnings to stderr (they don't prevent execution)
 	for _, w := range warns {
@@ -76,6 +79,15 @@ func validateAgent(agent *AgentConfig) ValidationErrors {
 		errs = append(errs, ValidationError{
 			Field:   "agent.command",
 			Message: "agent.command is required",
+		})
+	}
+
+	switch agent.ImageScope {
+	case "", ImageScopeWorkspace, ImageScopeShared:
+	default:
+		errs = append(errs, ValidationError{
+			Field:   "agent.image_scope",
+			Message: fmt.Sprintf("invalid value %q (must be %q or %q)", agent.ImageScope, ImageScopeWorkspace, ImageScopeShared),
 		})
 	}
 
@@ -183,20 +195,45 @@ func sortedPresetNames() []string {
 	return names
 }
 
-func validateEnvPassthrough(vars []string) ValidationErrors {
+func validateEnvPassthrough(entries []EnvPassthroughEntry) ValidationErrors {
 	var errs ValidationErrors
 
-	for _, v := range vars {
-		if isGlobPattern(v) {
-			continue // Skip glob patterns - they match zero or more variables
+	for _, e := range entries {
+		if isGlobPattern(e.Name) {
+			// Globs match zero or more variables at runtime; they cannot be required.
+			if e.Required {
+				errs = append(errs, ValidationError{
+					Field:   "agent.env_passthrough",
+					Message: fmt.Sprintf("glob pattern %s cannot be marked required", e.Name),
+				})
+			}
+			continue
 		}
-		if os.Getenv(v) == "" {
+		if _, ok := os.LookupEnv(e.Name); ok && os.Getenv(e.Name) != "" {
+			continue
+		}
+		if e.Required {
 			errs = append(errs, ValidationError{
 				Field:   "agent.env_passthrough",
-				Message: fmt.Sprintf("required environment variable %s is not set", v),
+				Message: fmt.Sprintf("required environment variable %s is not set", e.Name),
 			})
+		} else {
+			slog.Debug("optional env_passthrough variable not set; skipping", "name", e.Name)
 		}
 	}
 
+	return errs
+}
+
+func validateEnvVars(field string, vars []EnvVar) ValidationErrors {
+	var errs ValidationErrors
+	for _, e := range vars {
+		if !ValidEnvName(e.Name) {
+			errs = append(errs, ValidationError{
+				Field:   field,
+				Message: fmt.Sprintf("invalid environment variable name %q (must match [A-Za-z_][A-Za-z0-9_]*)", e.Name),
+			})
+		}
+	}
 	return errs
 }

@@ -104,6 +104,7 @@ func generateReferenceTemplate() string {
 	sb.WriteString("#\n")
 	sb.WriteString("#   # Environment variables to pass from host to container\n")
 	sb.WriteString("#   # Supports glob patterns like MY_VAR_*\n")
+	sb.WriteString("#   # Exact names are optional; use {name: X, required: true} to require one\n")
 	sb.WriteString("#   env_passthrough:\n")
 	sb.WriteString("#     - MY_API_KEY\n")
 	sb.WriteString("\n")

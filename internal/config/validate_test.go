@@ -233,7 +233,39 @@ func TestValidate(t *testing.T) {
 		}
 	})
 
-	t.Run("missing env passthrough var fails", func(t *testing.T) {
+	t.Run("missing optional env passthrough var passes", func(t *testing.T) {
+		envVar := "TEST_NONEXISTENT_VAR_12345"
+		_ = os.Unsetenv(envVar)
+
+		cfg := &Config{
+			Agent: AgentConfig{
+				Command:        []string{"test"},
+				EnvPassthrough: []EnvPassthroughEntry{{Name: envVar}},
+			},
+			Workspace: WorkspaceConfig{Path: tmpDir},
+		}
+
+		if err := Validate(cfg); err != nil {
+			t.Errorf("Validate() unexpected error for optional missing var: %v", err)
+		}
+	})
+
+	t.Run("glob pattern marked required fails", func(t *testing.T) {
+		cfg := &Config{
+			Agent: AgentConfig{
+				Command:        []string{"test"},
+				EnvPassthrough: []EnvPassthroughEntry{{Name: "CLAUDE_CODE_*", Required: true}},
+			},
+			Workspace: WorkspaceConfig{Path: tmpDir},
+		}
+
+		err := Validate(cfg)
+		if err == nil || !strings.Contains(err.Error(), "cannot be marked required") {
+			t.Errorf("Validate() expected glob+required error, got %v", err)
+		}
+	})
+
+	t.Run("missing required env passthrough var fails", func(t *testing.T) {
 		// Ensure the env var is not set
 		envVar := "TEST_NONEXISTENT_VAR_12345"
 		_ = os.Unsetenv(envVar)
@@ -241,7 +273,7 @@ func TestValidate(t *testing.T) {
 		cfg := &Config{
 			Agent: AgentConfig{
 				Command:        []string{"test"},
-				EnvPassthrough: []string{envVar},
+				EnvPassthrough: []EnvPassthroughEntry{{Name: envVar, Required: true}},
 			},
 		}
 
@@ -259,7 +291,7 @@ func TestValidate(t *testing.T) {
 		cfg := &Config{
 			Agent: AgentConfig{
 				Command:        []string{"test"},
-				EnvPassthrough: []string{envVar},
+				EnvPassthrough: []EnvPassthroughEntry{{Name: envVar, Required: true}},
 			},
 			Workspace: WorkspaceConfig{
 				Path: tmpDir,
@@ -278,7 +310,7 @@ func TestValidate(t *testing.T) {
 		cfg := &Config{
 			Agent: AgentConfig{
 				Command:        []string{"test"},
-				EnvPassthrough: []string{"CLAUDE_CODE_*", "TEST_PREFIX_???", "VAR_[A-Z]"},
+				EnvPassthrough: []EnvPassthroughEntry{{Name: "CLAUDE_CODE_*"}, {Name: "TEST_PREFIX_???"}, {Name: "VAR_[A-Z]"}},
 			},
 			Workspace: WorkspaceConfig{
 				Path: tmpDir,

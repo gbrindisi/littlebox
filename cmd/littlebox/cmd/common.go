@@ -18,6 +18,7 @@ type runOptions struct {
 	ttyMode container.TTYMode
 	rebuild bool
 	debug   bool
+	create  container.CreateOptions
 }
 
 // runContainer handles the full container lifecycle: create manager, ensure image,
@@ -43,7 +44,7 @@ func runContainer(ctx context.Context, opts runOptions) (int, error) {
 	// Determine which image to use: derived image if BuildScript is set, otherwise base image
 	imageTag := container.ImageTag()
 	if opts.cfg.Agent.BuildScript != "" {
-		derivedTag, err := mgr.EnsureDerivedImage(ctx, opts.cfg.Agent.BuildScript, opts.cfg.Workspace.Path, opts.rebuild, verbosity, os.Stderr)
+		derivedTag, err := mgr.EnsureDerivedImage(ctx, opts.cfg.Agent.BuildScript, opts.cfg.ImageScopeKey(), opts.rebuild, verbosity, os.Stderr)
 		if err != nil {
 			return 1, fmt.Errorf("failed to ensure derived image: %w", err)
 		}
@@ -52,7 +53,7 @@ func runContainer(ctx context.Context, opts runOptions) (int, error) {
 
 	tty := container.DetectTTY(opts.ttyMode)
 
-	containerID, err := container.CreateContainer(ctx, mgr.Client(), opts.cfg, opts.args, tty, imageTag)
+	containerID, err := container.CreateContainerWithOptions(ctx, mgr.Client(), opts.cfg, opts.args, tty, imageTag, opts.create)
 	if err != nil {
 		return 1, fmt.Errorf("failed to create container: %w", err)
 	}

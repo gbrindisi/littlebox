@@ -51,3 +51,32 @@ func TestSignalNumbers(t *testing.T) {
 		t.Errorf("SIGQUIT = %d, want 3", syscall.SIGQUIT)
 	}
 }
+
+func TestSignalAction(t *testing.T) {
+	tests := []struct {
+		sig      syscall.Signal
+		wantKill string
+		wantStop bool
+	}{
+		{syscall.SIGINT, "SIGINT", false},
+		{syscall.SIGTERM, "SIGTERM", false},
+		{syscall.SIGQUIT, "SIGQUIT", false},
+		{syscall.SIGHUP, "SIGTERM", true},
+		{syscall.SIGUSR1, "", false},
+	}
+	for _, tt := range tests {
+		gotKill, gotStop := signalAction(tt.sig)
+		if gotKill != tt.wantKill || gotStop != tt.wantStop {
+			t.Errorf("signalAction(%v) = (%q, %v), want (%q, %v)", tt.sig, gotKill, gotStop, tt.wantKill, tt.wantStop)
+		}
+	}
+}
+
+func TestForwardedSignalsIncludesSIGHUP(t *testing.T) {
+	for _, s := range forwardedSignals {
+		if s == syscall.SIGHUP {
+			return
+		}
+	}
+	t.Fatal("SIGHUP must be intercepted so deferred Cleanup runs instead of Go's default exit")
+}
