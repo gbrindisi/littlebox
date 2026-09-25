@@ -9,12 +9,19 @@ agent:
     # Copy claude to system-wide location (install script puts it in ~/.local/bin)
     cp /root/.local/bin/claude /usr/local/bin/claude
 
+  # Derived image cache scope (optional): workspace (default) builds one image
+  # per workspace path; shared reuses one image across workspaces.
+  # image_scope: workspace
+
   # Command and arguments to run
   command: ["claude"]
   args: ["--dangerously-skip-permissions", "--print"]
 
   # Environment variables to pass from host to container
   # Supports glob patterns like CLAUDE_CODE_*
+  # Exact names are optional (skipped if unset). To require one:
+  #   - name: MY_VAR
+  #     required: true
   env_passthrough:
    - ANTHROPIC_API_KEY
    - DISABLE_TELEMETRY

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/docker/docker/api/types/image"
+	"github.com/gbrindisi/littlebox/internal/config"
 	"github.com/gbrindisi/littlebox/internal/output"
 )
 
@@ -401,4 +402,17 @@ func TestEnsureDerivedImageIntegration(t *testing.T) {
 
 	// Clean up the test image
 	_, _ = mgr.client.ImageRemove(ctx, derivedTag, image.RemoveOptions{Force: true})
+}
+
+func TestDerivedImageTagSharedScope(t *testing.T) {
+	script := "apt-get install -y jq"
+	a := &config.Config{Agent: config.AgentConfig{BuildScript: script, ImageScope: config.ImageScopeShared}, Workspace: config.WorkspaceConfig{Path: "/w1"}}
+	b := &config.Config{Agent: config.AgentConfig{BuildScript: script, ImageScope: config.ImageScopeShared}, Workspace: config.WorkspaceConfig{Path: "/w2"}}
+	if DerivedImageTag(script, a.ImageScopeKey()) != DerivedImageTag(script, b.ImageScopeKey()) {
+		t.Error("shared scope should produce the same tag across workspaces")
+	}
+	a.Agent.ImageScope, b.Agent.ImageScope = config.ImageScopeWorkspace, config.ImageScopeWorkspace
+	if DerivedImageTag(script, a.ImageScopeKey()) == DerivedImageTag(script, b.ImageScopeKey()) {
+		t.Error("workspace scope should produce different tags across workspaces")
+	}
 }
