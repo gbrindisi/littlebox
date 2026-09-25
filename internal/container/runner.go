@@ -17,6 +17,15 @@ import (
 // The imageTag parameter specifies which image to use for the container.
 // It returns the container ID.
 func CreateContainer(ctx context.Context, cli *client.Client, cfg *config.Config, args []string, tty bool, imageTag string) (string, error) {
+	return CreateContainerWithOptions(ctx, cli, cfg, args, tty, imageTag, CreateOptions{})
+}
+
+// CreateContainerWithOptions is like CreateContainer but also applies an optional
+// container name and labels. The label littlebox=1 is always set.
+func CreateContainerWithOptions(ctx context.Context, cli *client.Client, cfg *config.Config, args []string, tty bool, imageTag string, opts CreateOptions) (string, error) {
+	if err := ValidateContainerName(opts.Name); err != nil {
+		return "", err
+	}
 	mounts := BuildMounts(cfg)
 
 	env := config.ResolveEnvPassthrough(cfg.Agent.EnvPassthrough)
@@ -65,6 +74,7 @@ func CreateContainer(ctx context.Context, cli *client.Client, cfg *config.Config
 			Env:          env,
 			WorkingDir:   "/workspace",
 			Tty:          tty,
+			Labels:       containerLabels(opts.Labels),
 			OpenStdin:    true,
 			StdinOnce:    true, // Close stdin after first client disconnects
 			AttachStdin:  true,
@@ -72,7 +82,7 @@ func CreateContainer(ctx context.Context, cli *client.Client, cfg *config.Config
 			AttachStderr: true,
 		},
 		hostConfig,
-		nil, nil, "",
+		nil, nil, opts.Name,
 	)
 	if err != nil {
 		return "", err

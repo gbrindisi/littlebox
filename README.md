@@ -235,8 +235,12 @@ littlebox run --rebuild                # Force image rebuild
 littlebox run --tty                    # Force TTY allocation
 littlebox run --no-tty                 # Disable TTY allocation
 littlebox run --debug                  # Enable debug output
+littlebox run --name my-agent          # Set container name
+littlebox run --label k=v --label a=b  # Add container labels (repeatable)
 littlebox run -- "your prompt here"    # Pass arguments to agent
 ```
+
+Every container gets the label `littlebox=1` (find them with `docker ps --filter label=littlebox=1`). Label keys must match `[A-Za-z0-9._/-]` (alphanumeric at both ends); the `littlebox` key is reserved.
 
 ### littlebox validate
 
