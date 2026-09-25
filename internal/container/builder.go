@@ -31,6 +31,7 @@ func ImageTag() string {
 // The tag is computed as a SHA256 hash of the build script + null byte + workspace path, using the first 12 characters.
 // The null byte separator prevents collision attacks (e.g., script "A" + path "B" vs script "AB").
 // Format: littlebox/build:<sha256(buildScript + "\x00" + workspacePath)[:12]>
+// An empty workspacePath (agent.image_scope: shared) yields one image per build script.
 func DerivedImageTag(buildScript string, workspacePath string) string {
 	// Hash buildScript + null byte + workspacePath for workspace isolation
 	hashInput := buildScript + "\x00" + workspacePath

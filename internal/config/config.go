@@ -19,6 +19,24 @@ type AgentConfig struct {
 	Env            []EnvVar `yaml:"env,omitempty"`
 	EnvPassthrough []string `yaml:"env_passthrough,omitempty"`
 	BuildScript    string   `yaml:"build_script,omitempty"`
+	// ImageScope controls derived image caching: "workspace" (default) builds a
+	// separate image per workspace path; "shared" reuses one image per build script.
+	ImageScope string `yaml:"image_scope,omitempty"`
+}
+
+// Image scope values for AgentConfig.ImageScope.
+const (
+	ImageScopeWorkspace = "workspace"
+	ImageScopeShared    = "shared"
+)
+
+// ImageScopeKey returns the workspace component used when hashing the derived
+// image tag. It is empty for the shared scope so all workspaces share one image.
+func (c *Config) ImageScopeKey() string {
+	if c.Agent.ImageScope == ImageScopeShared {
+		return ""
+	}
+	return c.Workspace.Path
 }
 
 // WorkspaceConfig defines how the workspace is mounted.

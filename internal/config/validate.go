@@ -79,6 +79,15 @@ func validateAgent(agent *AgentConfig) ValidationErrors {
 		})
 	}
 
+	switch agent.ImageScope {
+	case "", ImageScopeWorkspace, ImageScopeShared:
+	default:
+		errs = append(errs, ValidationError{
+			Field:   "agent.image_scope",
+			Message: fmt.Sprintf("invalid value %q (must be %q or %q)", agent.ImageScope, ImageScopeWorkspace, ImageScopeShared),
+		})
+	}
+
 	return errs
 }
 
