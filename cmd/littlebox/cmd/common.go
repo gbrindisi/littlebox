@@ -18,6 +18,7 @@ type runOptions struct {
 	ttyMode container.TTYMode
 	rebuild bool
 	debug   bool
+	create  container.CreateOptions
 }
 
 // runContainer handles the full container lifecycle: create manager, ensure image,
@@ -52,7 +53,7 @@ func runContainer(ctx context.Context, opts runOptions) (int, error) {
 
 	tty := container.DetectTTY(opts.ttyMode)
 
-	containerID, err := container.CreateContainer(ctx, mgr.Client(), opts.cfg, opts.args, tty, imageTag)
+	containerID, err := container.CreateContainerWithOptions(ctx, mgr.Client(), opts.cfg, opts.args, tty, imageTag, opts.create)
 	if err != nil {
 		return 1, fmt.Errorf("failed to create container: %w", err)
 	}
