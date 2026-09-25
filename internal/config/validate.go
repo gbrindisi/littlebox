@@ -57,6 +57,8 @@ func Validate(cfg *Config) error {
 	warns = append(warns, networkWarns...)
 
 	errs = append(errs, validateEnvPassthrough(cfg.Agent.EnvPassthrough)...)
+	errs = append(errs, validateEnvVars("env", cfg.Env)...)
+	errs = append(errs, validateEnvVars("agent.env", cfg.Agent.Env)...)
 
 	// Print warnings to stderr (they don't prevent execution)
 	for _, w := range warns {
@@ -220,5 +222,18 @@ func validateEnvPassthrough(entries []EnvPassthroughEntry) ValidationErrors {
 		}
 	}
 
+	return errs
+}
+
+func validateEnvVars(field string, vars []EnvVar) ValidationErrors {
+	var errs ValidationErrors
+	for _, e := range vars {
+		if !ValidEnvName(e.Name) {
+			errs = append(errs, ValidationError{
+				Field:   field,
+				Message: fmt.Sprintf("invalid environment variable name %q (must match [A-Za-z_][A-Za-z0-9_]*)", e.Name),
+			})
+		}
+	}
 	return errs
 }
