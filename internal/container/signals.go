@@ -4,46 +4,67 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
+	"time"
 
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
 )
 
+// hangupStopTimeout is how long the container gets to exit after SIGTERM
+// (sent on SIGHUP) before Docker kills it.
+const hangupStopTimeout = 10 * time.Second
+
+// forwardedSignals is the set of host signals littlebox intercepts.
+var forwardedSignals = []os.Signal{syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGHUP}
+
+// signalAction describes how a host signal is handled.
+// If stop is true, the container is stopped (SIGTERM, then SIGKILL after a timeout).
+// Otherwise killSignal is forwarded verbatim via ContainerKill. Empty killSignal
+// with stop=false means the signal is ignored.
+func signalAction(sig os.Signal) (killSignal string, stop bool) {
+	switch sig {
+	case syscall.SIGINT:
+		return "SIGINT", false
+	case syscall.SIGTERM:
+		return "SIGTERM", false
+	case syscall.SIGQUIT:
+		return "SIGQUIT", false
+	case syscall.SIGHUP:
+		// Controlling terminal went away (e.g. tmux window killed). Nobody is
+		// left to interact with the agent, so stop the container. Intercepting
+		// SIGHUP also prevents Go's default "exit immediately" behavior, so the
+		// run path's deferred Cleanup still executes.
+		return "SIGTERM", true
+	default:
+		return "", false
+	}
+}
+
 // ForwardSignals forwards host signals to the container.
-// It sets up signal handlers for SIGINT (Ctrl+C), SIGTERM (kill), and SIGQUIT,
-// and forwards them to the container via Docker's ContainerKill API.
-// This allows the container process to handle cleanup gracefully.
+// SIGINT, SIGTERM and SIGQUIT are forwarded via ContainerKill. SIGHUP is
+// treated like SIGTERM but via ContainerStop, which escalates to SIGKILL after
+// hangupStopTimeout so the container is guaranteed to exit; WaitContainer then
+// returns and the caller's deferred Cleanup removes the container.
 //
-// The function returns a cleanup function that should be called to stop
-// signal forwarding (typically via defer). This stops the signal notification
-// and prevents further signals from being forwarded.
+// The returned function stops signal forwarding (typically via defer).
 func ForwardSignals(ctx context.Context, cli *client.Client, containerID string) func() {
 	sigCh := make(chan os.Signal, 1)
-	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	signal.Notify(sigCh, forwardedSignals...)
 
 	go func() {
 		for sig := range sigCh {
-			var sigStr string
-			switch sig {
-			case syscall.SIGINT:
-				sigStr = "SIGINT"
-			case syscall.SIGTERM:
-				sigStr = "SIGTERM"
-			case syscall.SIGQUIT:
-				sigStr = "SIGQUIT"
-			default:
+			sigStr, stop := signalAction(sig)
+			if stop {
+				timeoutSec := int(hangupStopTimeout.Seconds())
+				_ = cli.ContainerStop(ctx, containerID, container.StopOptions{Signal: sigStr, Timeout: &timeoutSec})
 				continue
 			}
-
-			if err := cli.ContainerKill(ctx, containerID, sigStr); err != nil {
-				// Best-effort signal forwarding - silently ignore if container already exited
-				// "No such container" is expected when the container has finished
-				if !strings.Contains(err.Error(), "No such container") {
-					// Log unexpected errors for debugging
-					_ = err // Silently ignore - this is best-effort
-				}
+			if sigStr == "" {
+				continue
 			}
+			// Best-effort: container may already have exited ("No such container").
+			_ = cli.ContainerKill(ctx, containerID, sigStr)
 		}
 	}()
 
